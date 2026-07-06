@@ -9,7 +9,6 @@ intents.members = True
 
 bot = commands.Bot(command_prefix='!', intents=intents)
 
-# الرتب المسموح لها (OWNER & CREATOR)
 ADMIN_ROLE_IDS = [1523325683344998515, 1523325683344998516] 
 
 def is_admin(ctx):
@@ -22,35 +21,39 @@ def get_accounts():
     except FileNotFoundError:
         return []
 
-# --- أمر الإرسال الإداري فقط ---
+# --- أمر الإرسال المتعدد ---
 @bot.command()
-async def send(ctx, member: discord.Member):
-    # التحقق من الصلاحيات
+async def send(ctx, member: discord.Member, service: str, amount: int = 1):
     if not is_admin(ctx): 
-        return await ctx.send("🚫 | هذه الصلاحية فقط للأونر والكرييتور!")
+        return await ctx.send("🚫 | فقط للأونر والكرييتور!")
     
+    if service.lower() != "minecraft":
+        return await ctx.send("❌ | حالياً البوت يدعم `minecraft` فقط.")
+
     accounts = get_accounts()
     
-    if not accounts:
-        return await ctx.send("❌ | المخزون فارغ! لا يوجد حسابات في `minecraft.txt`")
+    if len(accounts) < amount:
+        return await ctx.send(f"❌ | لا يوجد ما يكفي من الحسابات! المتوفر حالياً: `{len(accounts)}`")
 
-    # سحب أول حساب
-    item = accounts.pop(0)
+    # سحب العدد المطلوب
+    items = [accounts.pop(0) for _ in range(amount)]
     with open("minecraft.txt", "w") as f: f.write("\n".join(accounts))
     
-    # رسالة الـ Embed المودرن
+    # تنسيق الحسابات في نص واحد للـ Embed
+    formatted_accounts = "\n".join([f"• ||`{item}`||" for item in items])
+    
     embed = discord.Embed(
-        title="⛏️ | Blaze Cloud | مبروك هديتك!",
-        description="لقد تم اختيارك لتحصل على حساب ماين كرافت!",
+        title="⛏️ | Blaze Cloud | دفعة حسابات جديدة",
+        description=f"لقد حصلت على `{amount}` حساب ماين كرافت!",
         color=0x00FF99
     )
-    embed.add_field(name="🔑 بيانات الحساب:", value=f"||`{item}`||", inline=False)
+    embed.add_field(name="🔑 البيانات:", value=formatted_accounts, inline=False)
     embed.set_footer(text="Blaze Cloud | استمتع باللعب!")
     
     try:
         await member.send(embed=embed)
-        await ctx.send(f"✅ | تم إرسال الحساب لـ {member.mention} في الخاص.")
+        await ctx.send(f"✅ | تم إرسال `{amount}` حساب لـ {member.mention} بنجاح.")
     except discord.Forbidden:
-        await ctx.send(f"❌ | {member.mention}، يرجى فتح الخاص لاستلام الحساب!")
+        await ctx.send(f"❌ | {member.mention}، يرجى فتح الخاص لاستلام الحسابات!")
 
 bot.run(os.environ.get('TOKEN'))
