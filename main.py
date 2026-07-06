@@ -21,6 +21,28 @@ def get_accounts():
     except FileNotFoundError:
         return []
 
+@bot.event
+async def on_ready():
+    # حالة الـ DND والنشاط كما اتفقنا
+    activity = discord.Activity(type=discord.ActivityType.listening, name="!help")
+    await bot.change_presence(status=discord.Status.dnd, activity=activity)
+    print(f'✅ {bot.user} متصل بوضعية DND!')
+
+# --- أمر الـ Stock (جديد) ---
+@bot.command()
+async def stock(ctx):
+    accounts = get_accounts()
+    count = len(accounts)
+    
+    embed = discord.Embed(
+        title="📦 | مخزون Blaze Cloud",
+        description=f"عدد حسابات ماين كرافت المتوفرة حالياً:",
+        color=0x00FF99
+    )
+    embed.add_field(name="Minecraft", value=f"`{count}` حساب", inline=True)
+    embed.set_footer(text="Blaze Cloud | يتم تحديث المخزون باستمرار")
+    await ctx.send(embed=embed)
+
 # --- أمر الإرسال المتعدد ---
 @bot.command()
 async def send(ctx, member: discord.Member, service: str, amount: int = 1):
@@ -39,7 +61,7 @@ async def send(ctx, member: discord.Member, service: str, amount: int = 1):
     items = [accounts.pop(0) for _ in range(amount)]
     with open("minecraft.txt", "w") as f: f.write("\n".join(accounts))
     
-    # تنسيق الحسابات في نص واحد للـ Embed
+    # تنسيق الحسابات
     formatted_accounts = "\n".join([f"• ||`{item}`||" for item in items])
     
     embed = discord.Embed(
