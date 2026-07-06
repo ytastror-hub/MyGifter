@@ -11,7 +11,7 @@ intents = discord.Intents.default()
 intents.message_content = True
 intents.members = True
 
-bot = commands.Bot(command_prefix='$', intents=endents, help_command=None)
+bot = commands.Bot(command_prefix='$', intents=intents, help_command=None)
 ADMIN_ROLE_IDS = [1523325683344998515, 1523325683344998516] 
 
 def is_admin(ctx):
