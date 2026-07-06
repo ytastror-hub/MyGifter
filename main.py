@@ -29,12 +29,6 @@ def get_accounts():
 def update_accounts(accounts):
     with open(FILE_PATH, "w") as f: f.write("\n".join(accounts))
 
-@bot.event
-async def on_ready():
-    # وضع حالة DND
-    await bot.change_presence(status=discord.Status.dnd, activity=discord.Activity(type=discord.ActivityType.listening, name="$help"))
-    print(f'✅ البوت يعمل وجاهز بوضعية DND!')
-
 # --- أمر المساعدة ---
 @bot.command()
 async def help(ctx):
