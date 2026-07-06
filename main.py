@@ -7,7 +7,7 @@ intents = discord.Intents.default()
 intents.message_content = True
 intents.members = True
 
-bot = commands.Bot(command_prefix='!', intents=intents)
+bot = commands.Bot(command_prefix='$', intents=intents)
 
 ADMIN_ROLE_IDS = [1523325683344998515, 1523325683344998516] 
 
