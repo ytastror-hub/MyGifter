@@ -15,8 +15,8 @@ intents.members = True
 bot = commands.Bot(command_prefix='$', intents=intents, help_command=None)
 
 # --- إعدادات الرتب (ضع ID رتبتك هنا) ---
-ADMIN_ROLE_IDS = [1523325683344998515, 1523325683344998516] 
-ROLE_TO_PING = 1523325683286413411  # <--- ضع ID الرتبة للمنشن هنا
+ADMIN_ROLE_IDS = [1523805590072070257, 1523805589132808323] 
+ROLE_TO_PING = 1523805629897244803  # <--- ضع ID الرتبة للمنشن هنا
 
 def is_admin(ctx):
     return any(role.id in ADMIN_ROLE_IDS for role in ctx.author.roles)
